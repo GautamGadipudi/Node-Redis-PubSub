@@ -1,8 +1,11 @@
 # Node-Redis-PubSub
 Using a redis server, and node js node, and socket.io, I have established a PubSub model.
+Step #0
+  Run the following commands in your terminal:
+    npm i -s express socket.io redis body-parser
 
 Step #1
-  Run the redis server in the terminal using the command: 
+  Run the redis server in another terminal using the command: 
     redis-server
  
 Step #2
