@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title> Subscriber </title>
+</head>
+<body>
+	<script src="/socket.io/socket.io.js"></script>
+	<script>
+		function getParameterByName(name, url) {
+			if (!url) url = window.location.href;
+			name = name.replace(/[\[\]]/g, "\\$&");
+			var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+			results = regex.exec(url);
+			if (!results) return null;
+			if (!results[2]) return '';
+			return decodeURIComponent(results[2].replace(/\+/g, " "));
+		}
+	</script>
+	<script> 
+		var socket = io.connect();
+		document.write("GGWP"); 
+		var userID = getParameterByName('username');
+		var xyz = {type: "CLIENT_ID", payload: userID};
+		socket.emit('toSocketConnection', xyz);
+		
+		
+		socket.on('message', function(data) {
+			console.log(data);
+		});
+	</script>
+</body>
+</html>
