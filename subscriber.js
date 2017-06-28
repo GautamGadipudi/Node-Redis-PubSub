@@ -9,7 +9,7 @@ var redis = require('redis');
 
 var bodyParser = require('body-parser');
 var io = require('socket.io').listen(http);
-var url = require('url') ;
+
 
 var users = {}
 var sockArray = {}
@@ -28,23 +28,25 @@ redisClient.on("message", function(channel, redisMessage){
 	redisMessage = JSON.parse(redisMessage);
 	console.log('fetching socket for id :: ',redisMessage.userId)
 	var clientSocketId = users[redisMessage.userId];
-	console.log('socket is :: ',clientSocketId);
+	
 	if(clientSocketId) {
+		console.log('socket is :: ',clientSocketId);
 		console.log('sending message to client socket')
 		var clientSocket = sockArray[clientSocketId]
 		clientSocket.emit('message', redisMessage.payload)
 		console.log('sent message to client socket')
 	}
+	else{
+		console.log('Socket not found for user: ' + redisMessage.userId);
+	}
 });
 
 app.use(bodyParser.json({ extended: true })); 
 
-var queryObject;
+
 
 app.get('/myChannel', function(req, res){
 	res.sendfile('subscriber.html');
-	queryObject = url.parse(req.url,true).query;
-	
 });
 
 

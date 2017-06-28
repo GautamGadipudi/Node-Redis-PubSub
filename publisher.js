@@ -1,16 +1,10 @@
 var app = require('express')();
 var http = require('http').Server(app);
 var redis = require('redis');
-// var io = require('socket.io')(http);
+
 
 var bodyParser = require('body-parser');	
 
-/*io.on('connection', function(socket){
-	console.log("A user connected");
-	socket.on('disconnect', function(){
-		console.log("A user disconnected");
-	});
-});*/
 var redisClient = redis.createClient({host : 'localhost', port : 6379});
 
 redisClient.on("ready", function(){

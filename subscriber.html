@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title> Subscriber </title>
+	<title></title>
 </head>
 <body>
 	<script src="/socket.io/socket.io.js"></script>
@@ -19,8 +19,9 @@
 	<script> 
 		var socket = io.connect();
 		document.write("GGWP"); 
-		var userID = getParameterByName('username');
-		var xyz = {type: "CLIENT_ID", payload: userID};
+		var userId = getParameterByName('username');
+		document.title = userId + " : Subscriber	";
+		var xyz = {type: "CLIENT_ID", payload: userId};
 		socket.emit('toSocketConnection', xyz);
 		
 		
