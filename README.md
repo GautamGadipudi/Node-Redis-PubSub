@@ -2,7 +2,7 @@
 Using a redis server, and node js node, and socket.io, I have established a PubSub model.
 Step #0
   Run the following commands in your terminal:
-    npm i -s express socket.io redis body-parser
+    npm install express socket.io redis body-parser uuid --save
 
 Step #1
   Run the redis server in another terminal using the command: 
@@ -27,7 +27,9 @@ Step #5
     "type": "CLIENT_ID",
     "userId" : "yourname",
     "payload": {
-      "txn": "cred"
+      "txn": "cred",
+      "amount": "3000",
+      "allother": "payload"
     }
   }	  
   
