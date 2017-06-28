@@ -20,7 +20,7 @@
 		var socket = io.connect();
 		document.write("GGWP"); 
 		var userId = getParameterByName('username');
-		document.title = userId + " : Subscriber	";
+		document.title = userId + " : Subscriber";
 		var xyz = {type: "CLIENT_ID", payload: userId};
 		socket.emit('toSocketConnection', xyz);
 		

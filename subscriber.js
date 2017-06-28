@@ -9,22 +9,24 @@ var redis = require('redis');
 
 var bodyParser = require('body-parser');
 var io = require('socket.io').listen(http);
+var uuidv4 = require('uuid/v4');
 
 
+var userChannel = uuidv4();
 var users = {}
 var sockArray = {}
 
+var redisSubscriber = redis.createClient({host : 'localhost', port : 6379});
 var redisClient = redis.createClient({host : 'localhost', port : 6379});
 
-redisClient.on("ready", function(){
+redisSubscriber.on("ready", function(){
 	console.log("Redis babu is ready !");
 });
-redisClient.on("error", function(){
-	console.log("Redis babu has an error!"); 
+redisSubscriber.on("error", function(e){
+	console.log("Redis babu has an error!",e); 
 });
-redisClient.subscribe('myChannel');
 
-redisClient.on("message", function(channel, redisMessage){
+redisSubscriber.on("message", function(channel, redisMessage){
 	redisMessage = JSON.parse(redisMessage);
 	console.log('fetching socket for id :: ',redisMessage.userId)
 	var clientSocketId = users[redisMessage.userId];
@@ -41,8 +43,9 @@ redisClient.on("message", function(channel, redisMessage){
 	}
 });
 
-app.use(bodyParser.json({ extended: true })); 
+redisSubscriber.subscribe(userChannel);
 
+app.use(bodyParser.json({ extended: true })); 
 
 
 app.get('/myChannel', function(req, res){
@@ -52,18 +55,26 @@ app.get('/myChannel', function(req, res){
 
 //Whenever someone connects this gets executed
 io.on('connection', function(sock){
-	var username;
+	//var username;
 	sock.on('toSocketConnection', function(message) {
 		if(message.type === 'CLIENT_ID') {
-			username = message.payload;
-			users[username] = sock.id;
+			
+
+			//Assigning unique channel to a user
+			//userChannel[message.payload] = uuidv4();
+			console.log("Channel id for "+ message.payload + " : " + userChannel);
+			redisClient.set(message.payload, userChannel);
+			
+			users[message.payload] = sock.id;
+			sock.user = message.payload;
 			sockArray[sock.id] = sock;
-			console.log(sock.id + ' is assigned to user ::' + message.payload);
+			console.log("Socket id for "+ message.payload + " : " + users[message.payload]);
 		}
 	});
 	
 	//Whenever someone disconnects this piece of code executed
 	sock.on('disconnect', function () {
+		var username = sock.user;
 		console.log(username + " disconnected");
 		delete users[username];
 		console.log("Connected users: " + JSON.stringify(users));
